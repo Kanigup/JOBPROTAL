@@ -5,7 +5,7 @@ export default function Cards({ jobs }) {
   return (
     <div className={style.cards}>
       {jobs.map((arr, idx) => (
-        <Card key={arr.idx} obj={arr} />
+        <Card key={idx} obj={arr} />
       ))}
     </div>
   );

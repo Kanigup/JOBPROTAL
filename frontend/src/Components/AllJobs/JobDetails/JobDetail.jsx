@@ -1,11 +1,11 @@
 import React from "react";
 import styles from "./JobDetail.module.css";
 
-const JobDetail = () => {
+const JobDetail = ({ job }) => {
   return (
     <div className={styles.container}>
       <div>
-        <h1 className="text-6xl font-bold">MicroSoft</h1>
+        <h1 className="text-6xl font-bold">{job.CompName}</h1>
         <hr />
 
         <div className={styles.jobDetails}>
@@ -14,10 +14,10 @@ const JobDetail = () => {
           <div className={styles.jobD}>
             <div className="p-2">
               <p>
-                <strong>Education:</strong> Graduate (Bachelor Degree)
+                <strong>Education:</strong> {job.MiniEducat}
               </p>
               <p>
-                <strong>Experience:</strong> Freshers can apply
+                <strong>Experience:</strong> {job.JobExperience}
               </p>
               <p>
                 <strong>Location</strong> Kolkata, Kolkata, West Bengal - 700080
@@ -32,7 +32,7 @@ const JobDetail = () => {
                 <strong>Gender:</strong> Both
               </p>
               <p>
-                <strong>Salary:</strong> 25000
+                <strong>Salary:</strong> {job.Salary}
               </p>
               <p>
                 <strong>Type:</strong> Intership
@@ -44,13 +44,7 @@ const JobDetail = () => {
         <div className={styles.jobDescription}>
           <h2 className="text-4xl font-bold">Job Description</h2>
           <hr />
-          <p>
-            *BAJAJ ALLIANZ LIFE INSURANCE COMPANY* ( *BALIC* ) Salary - ( *19k
-            Including Allowance*) + *Incentives* Recruitment Process -
-            *Interview* + *IRDAI Exam*( *Training will be Given*) Exam Center :
-            Nearest *NSEIT CENTER of your Location* Office Branch: *KOLKATA* (
-            *BUT WORK FROM HOME*)
-          </p>
+          <p>{job.JobDescr}</p>
         </div>
       </div>
     </div>

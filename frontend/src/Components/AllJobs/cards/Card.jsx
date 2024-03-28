@@ -5,18 +5,12 @@ import { MdHomeFilled } from "react-icons/md";
 import { FaWallet } from "react-icons/fa";
 import { SlArrowRight } from "react-icons/sl";
 import { Link } from "react-router-dom";
-import { AllFunction } from "../../store/store";
 export default function Card({ obj }) {
-  const { jobId, handleApplyJob } = useContext(AllFunction);
   const companyName = obj.CompName;
   const jobRole = obj.JobTitle;
   const jobType = obj.workLocation;
   const jobTIme = obj.JobType;
   const minimum = obj.Salary;
-  // const handleApply = async () => {
-  //   handleApplyJob(obj.JobId);
-  //   window.location.href = "/AllJobs/apply";
-  // };
   return (
     <div className={style.card}>
       <div className={`d-flex justify-content-between ${style.header}`}>
@@ -31,7 +25,7 @@ export default function Card({ obj }) {
           </div>
         </div>
         <div>
-          <Link to="apply">
+          <Link to={`apply/:${obj.JobId}`}>
             <button className={style.closeButton}>
               <SlArrowRight />
             </button>

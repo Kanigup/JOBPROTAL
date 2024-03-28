@@ -25,7 +25,7 @@ export default function MainJobs() {
     if (allJobs === null) {
       axios.get("/allJobs").then((res) => {
         if (res.data.Status === "Success") {
-          console.log(res.data.jobs);
+          // console.log(res.data.jobs);
           handleAllJobs(res.data.jobs);
         }
       });

@@ -472,7 +472,7 @@ app.post("/update-user-data", varifyUser, (req, res) => {
 
 app.get("/allJobs", (req, res) => {
   const sql =
-    "SELECT job.JobId ,job.JobTitle, job.workLocation, job.JobType, job.Salary, HR.CompName FROM job INNER JOIN HR ON job.HrID = HR.HrID";
+    "SELECT job.JobId ,job.JobTitle,job.Salary,job.JobDescr, job.workLocation,job.JobExperience,job.MiniEducat,job.City, job.JobType, job.Salary, HR.CompName FROM job INNER JOIN HR ON job.HrID = HR.HrID";
   db.query(sql, (err, result) => {
     if (err) throw err;
     return res.json({ Status: "Success", jobs: result });
@@ -483,4 +483,13 @@ app.get("/allApplication", varifyUser, (req, res) => {
   const id = req.id;
 
   return res.json({ Status: "Success" });
+});
+
+app.post("/applyJob", varifyUser, (req, res) => {
+  const id = req.id;
+  const sql = "insert into jobapplication (JsId,JobId,JaStatus) values(?,?,?)";
+  db.query(sql, [id, req.body.jobId, "pending"], (err, result) => {
+    if (err) throw err;
+    return res.json({ Status: "Success" });
+  });
 });

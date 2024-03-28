@@ -24,7 +24,7 @@ const router = createBrowserRouter(
     <Route path="/" element={<App />}>
       <Route path="/" element={<Home />} />
       <Route path="/AllJobs" element={<MainJobs />} />
-      <Route path="/AllJobs/apply" element={<JobProfile></JobProfile>} />
+      <Route path="/AllJobs/apply/:JobId" element={<JobProfile></JobProfile>} />
       <Route path="/login" element={<Login />} />
       <Route path="/experience" element={<AddExperience />} />
       <Route path="/education" element={<AddEducation />} />

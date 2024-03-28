@@ -3,13 +3,21 @@
 import React from "react";
 import styles from "./JobHeader.module.css";
 import { toast } from "react-toastify";
-const JobHeader = () => {
+import axios from "axios";
+const JobHeader = ({ jobId }) => {
   function handleApply() {
-    toast.success("Applied", {
-      autoClose: 1000,
-      onClose: () => {
-        window.location.href = "/AllJobs";
-      },
+    console.log(jobId);
+    axios.post("/applyJob", { jobId }).then((res) => {
+      if (res.data.Status === "Success") {
+        toast.success("Applied", {
+          autoClose: 1000,
+          onClose: () => {
+            window.location.href = "/AllJobs";
+          },
+        });
+      } else {
+        alert("Error");
+      }
     });
   }
   return (
