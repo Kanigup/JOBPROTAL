@@ -7,7 +7,7 @@ import { AllFunction } from "../store/store";
 
 export default function PostedJobs({ job, onSelectTab, handleJobId }) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  console.log(job);
+  // console.log(job);
   const [formData, setFormData] = useState({
     JobId: job.JobId,
     JobTitle: job.JobTitle,

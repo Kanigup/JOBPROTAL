@@ -6,12 +6,11 @@ function AllApplication() {
   axios.defaults.withCredentials = true;
   const [allApllication, setAllApplication] = useState([]);
   useEffect(() => {
-    console.log("hello");
     if (localStorage.getItem("token") !== null) {
       axios.get("/allApplication").then((res) => {
         if (res.data.Status === "Success") {
-          // setAllApplication(res.data.appliction);
-          console.log(res.data.appliction);
+          // console.log(res.data.application);
+          setAllApplication(res.data.application);
         }
       });
     }
