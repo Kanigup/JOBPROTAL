@@ -8,24 +8,20 @@ function HomePart() {
       <ul className="flex  flex-wrap ">
         <li>
           {" "}
-          <Box type="FRESHER" index={index} link="public/mainpage.png">
+          <Box type="FRESHER" index={index} link="/mainpage.png">
             {" "}
           </Box>{" "}
         </li>
         <li>
           {" "}
-          <Box
-            type="EXPERIENCE"
-            index={index + 1}
-            link="public/mainpage2.png"
-          ></Box>
+          <Box type="EXPERIENCE" index={index + 1} link="/mainpage2.png"></Box>
         </li>
         <li>
           {" "}
           <Box
             type="WEB DEVELOPER"
             index={index + 2}
-            link="public/mainpage3.png"
+            link="/mainpage3.png"
           ></Box>
         </li>
         <li>
@@ -33,7 +29,7 @@ function HomePart() {
           <Box
             type="POST GRADUATION"
             index={index + 3}
-            link="public/mainpage4.png"
+            link="/mainpage4.png"
           ></Box>
         </li>
       </ul>
