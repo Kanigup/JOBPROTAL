@@ -478,11 +478,7 @@ app.get("/allJobs", (req, res) => {
     return res.json({ Status: "Success", jobs: result });
   });
 });
-// SELECT j.JobTitle, h.CompName, h.CompWeb, ja.JaStatus
-// FROM Job j
-// INNER JOIN HR h ON j.HrID = h.HrID
-// INNER JOIN JobApplication ja ON j.JobId = ja.JobId
-// WHERE ja.JsId = 1;
+
 app.get("/allApplication", varifyUser, (req, res) => {
   const id = req.id;
   const sql =

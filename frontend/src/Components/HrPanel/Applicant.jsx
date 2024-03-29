@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 function Applicant({ applicant }) {
-  const [isOpen, setOpen] = useState(false);
+  // const [isOpen, setOpen] = useState(false);
   // console.log(applicant.Resume);
   return (
     <>
@@ -11,19 +11,12 @@ function Applicant({ applicant }) {
         <td>{applicant.JsEmail}</td>
         <td>{applicant.Phone}</td>
         <td>
-          <button
-            onClick={() => {
-              setOpen(!isOpen);
-            }}
-          >
-            Resume
-          </button>
+          <button>Resume</button>
         </td>
         <td>
           <button>View Profile</button>
         </td>
       </tr>
-      {isOpen && <img src={applicant.Resume}></img>}
     </>
   );
 }
