@@ -4,11 +4,12 @@ import "./header.css";
 // import axios from "axios";
 import { Link } from "react-router-dom";
 import style from "./header.module.css";
-import { useState } from "react";
+
+import { AllData } from "./Component/Store/Store";
 
 function Header() {
   const navRef = useRef();
-
+  const { adminAuth, handleAuth, handleSelectedTab } = useContext(AllData);
   const handleLogout = () => {
     // axios
     //   .get("/logout")
@@ -18,6 +19,7 @@ function Header() {
     //     location.replace("/");
     //   })
     //   .catch((err) => console.log(err));
+    handleAuth(false);
   };
 
   const showNavbar = () => {
@@ -40,17 +42,37 @@ function Header() {
       </div>
       <div className="flex justify-end mr-0">
         <nav ref={navRef}>
-          {/* <Link to="/user">
-            <button className={style.btn}>Profile</button>
-          </Link>
+          {adminAuth && (
+            <>
+              <button
+                className={`${style.btn} w-60`}
+                onClick={() => {
+                  handleSelectedTab("allRequest");
+                }}
+              >
+                All varification request
+              </button>
+              <button
+                className={`${style.btn} w-60`}
+                onClick={() => {
+                  handleSelectedTab("feedback");
+                }}
+              >
+                Veiw all Feedback
+              </button>
+            </>
+          )}
+          {adminAuth && (
+            <button className={style.btn} onClick={handleLogout}>
+              Logout
+            </button>
+          )}
 
-          <button className={style.btn} onClick={handleLogout}>
-            Logout
-          </button> */}
-
-          <Link to="login">
-            <button className={`${style.btn} w-40`}>Login</button>
-          </Link>
+          {!adminAuth && (
+            <Link to="login">
+              <button className={`${style.btn} w-40`}>Login</button>
+            </Link>
+          )}
           <button className="nav-btn nav-close-btn" onClick={showNavbar}>
             <FaTimes />
           </button>

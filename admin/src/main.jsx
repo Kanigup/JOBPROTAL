@@ -10,9 +10,11 @@ import {
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import Login from "./Login.jsx";
+import Home from "./Home.jsx";
 const router = createBrowserRouter(
   createRoutesFromChildren(
     <Route path="/" element={<App />}>
+      <Route path="/" element={<Home></Home>}></Route>
       <Route path="/login" element={<Login />}></Route>
     </Route>
   )

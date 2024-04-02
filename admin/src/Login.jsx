@@ -1,10 +1,16 @@
-import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AllData } from "./Component/Store/Store";
+
 export default function Login() {
+  const { handleAuth } = useContext(AllData);
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     const email = e.target.elements.email.value;
     const password = e.target.elements.password.value;
-
+    handleAuth(true);
+    navigate("/");
     e.target.elements.email.value = "";
     e.target.elements.password.value = "";
   };
