@@ -7,6 +7,7 @@ export const AllFunction = createContext({
   handleUserdata: () => {},
   handleAllJobs: () => {},
   handleApplyJob: () => {},
+  handleVerify: () => {},
 });
 const FunctionProvider = ({ children }) => {
   const [userAuth, setUserAuth] = useState(false);
@@ -25,6 +26,7 @@ const FunctionProvider = ({ children }) => {
     AdharId: "",
     AdminId: "",
     CompWeb: null,
+    isVerify: 0,
   });
   const [userData, setUserData] = useState({
     JsName: "",
@@ -33,6 +35,10 @@ const FunctionProvider = ({ children }) => {
     DOB: "",
     JsEmail: "",
   });
+  const [isVerify, serIsVerify] = useState(false);
+  const handleVerify = (temp) => {
+    serIsVerify(temp);
+  };
   const handleUserdata = (data) => {
     setUserData(data);
   };
@@ -68,6 +74,8 @@ const FunctionProvider = ({ children }) => {
         allJobs,
         handleApplyJob,
         jobId,
+        isVerify,
+        handleVerify,
       }}
     >
       {children}

@@ -8,6 +8,7 @@ import { AllFunction } from "../store/store";
 import axios from "axios";
 import AllApplicant from "./AllApplicant";
 import "./hr.css";
+import NotVerify from "./NotVerify";
 export default function Hr() {
   const [selectedTab, setSelectedTab] = useState("jobs");
   const handleTabSelect = (tabName) => {
@@ -21,7 +22,7 @@ export default function Hr() {
       console.log(error);
     }
   };
-  const { handleAuth } = useContext(AllFunction);
+  const { handleAuth, isVerify } = useContext(AllFunction);
   useEffect(() => {
     if (localStorage.getItem("token") != null) {
       axios.get("/").then((res) => {
@@ -39,13 +40,18 @@ export default function Hr() {
       <HrSidebar onSelectTab={handleTabSelect} />
       <div style={{ flex: 1 }} className="hrdiv">
         {/* Render the selected tab component */}
-        {selectedTab === "jobs" && (
+        {!isVerify && <NotVerify></NotVerify>}
+        {isVerify && selectedTab === "jobs" && (
           <HrJobs onSelectTab={handleTabSelect} handleJobId={handleJobId} />
         )}
-        {selectedTab === "search" && <SearchCandidate></SearchCandidate>}
-        {selectedTab === "setting" && <EditUserProfile></EditUserProfile>}
-        {selectedTab === "postJob" && <PostJob></PostJob>}
-        {selectedTab === "allApplicant" && (
+        {isVerify && selectedTab === "search" && (
+          <SearchCandidate></SearchCandidate>
+        )}
+        {isVerify && selectedTab === "setting" && (
+          <EditUserProfile></EditUserProfile>
+        )}
+        {isVerify && selectedTab === "postJob" && <PostJob></PostJob>}
+        {isVerify && selectedTab === "allApplicant" && (
           <AllApplicant onSelectTab={handleTabSelect} id={jobId} />
         )}
       </div>

@@ -528,7 +528,7 @@ app.post("/handle-varify", (req, res) => {
 });
 
 app.post("/delete-hr", (req, res) => {
-  const id = req.body.HrID;
+  const id = req.body.id;
   const sql = "delete from hr where HrId=?";
   db.query(sql, [id], (err, result) => {
     if (err) {

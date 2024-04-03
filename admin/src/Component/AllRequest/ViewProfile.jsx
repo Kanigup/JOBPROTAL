@@ -19,6 +19,7 @@ function ViewProfile() {
 
   const handleDelete = () => {
     // Add functionality for deletion
+    console.log(id);
     axios.post("/delete-hr", { id }).then((res) => {
       if (res.data.Status === "Success") {
         location.reload(true);

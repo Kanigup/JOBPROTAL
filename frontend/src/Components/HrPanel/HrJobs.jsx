@@ -4,8 +4,13 @@ import { AllFunction } from "../store/store";
 import axios from "axios";
 import Jobs from "./Jobs";
 export default function HrJobs({ onSelectTab, handleJobId }) {
-  const { hrData, handleHrData, hrPostjobData, handleHrPostJobData } =
-    useContext(AllFunction);
+  const {
+    hrData,
+    handleHrData,
+    hrPostjobData,
+    handleHrPostJobData,
+    handleVerify,
+  } = useContext(AllFunction);
   // onClickHandler should be a function that returns a function
   const onClickHandler = (tab) => () => {
     onSelectTab(tab);
@@ -13,6 +18,8 @@ export default function HrJobs({ onSelectTab, handleJobId }) {
   useEffect(() => {
     if (localStorage.getItem("info") != null && hrData.HrName === "") {
       const storedData = JSON.parse(localStorage.getItem("info"));
+      if (storedData.isVerify === 1) handleVerify(true);
+      else handleVerify(false);
       handleHrData(storedData);
     }
   }, []);
