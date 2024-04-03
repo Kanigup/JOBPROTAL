@@ -352,46 +352,6 @@ app.post("/admin-register", (req, res) => {
     });
   });
 });
-app.post("/admin-login", (req, res) => {
-  const sql = "select * from admin where AdminUserName=?";
-  db.query(sql, [req.body.email], (err, result) => {
-    if (result.length > 0) {
-      bcrypt.compare(
-        req.body.password.toString(),
-        result[0].pwd,
-        (err, response) => {
-          if (err) throw err;
-          if (response) {
-            const id = result[0].AdminId;
-            const token = jwt.sign({ id }, "key", { expiresIn: "1d" });
-            res.cookie("token", token);
-            return res.json({ Status: "Success", token });
-          } else {
-            return res.json({ Error: "Password not match" });
-          }
-        }
-      );
-    } else return res.json({ Error: "Emil not exist" });
-  });
-});
-
-const varifyAdmin = (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token) return res.json({ Error: "You are not authenticated" });
-  else {
-    jwt.verify(token, "key", (err, decoded) => {
-      if (err) return res.json({ Error: "Token is not correct" });
-      else {
-        req.id = decoded.id;
-        next();
-      }
-    });
-  }
-};
-
-app.get("/adminAuth", varifyAdmin, (req, res) => {
-  return res.json({ Status: "Success" });
-});
 
 app.get("/educationDetails", varifyUser, (req, res) => {
   const id = req.id;
@@ -494,6 +454,87 @@ app.post("/applyJob", varifyUser, (req, res) => {
   const sql = "insert into jobapplication (JsId,JobId,JaStatus) values(?,?,?)";
   db.query(sql, [id, req.body.jobId, "pending"], (err, result) => {
     if (err) throw err;
+    return res.json({ Status: "Success" });
+  });
+});
+
+// admin api
+app.post("/login-admin", (req, res) => {
+  const sql = "SELECT * FROM admin WHERE AdminUserName=?";
+  db.query(sql, [req.body.email], (err, result) => {
+    if (err) {
+      console.error("Error while querying the database:", err);
+      return res.json({ Error: "Internal Server Error" });
+    }
+
+    if (result.length > 0) {
+      const admin = result[0];
+      if (admin.pwd === req.body.password) {
+        const id = admin.AdminId;
+        const token = jwt.sign({ id }, "key", { expiresIn: "1d" });
+        res.cookie("token", token);
+        return res.json({ Status: "Success", token });
+      } else {
+        return res.json({ Error: "Enter correct password" });
+      }
+    } else {
+      return res.json({ Error: "Email not found" });
+    }
+  });
+});
+
+const varifyAdmin = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) return res.json({ Error: "You are not authenticated" });
+  else {
+    jwt.verify(token, "key", (err, decoded) => {
+      if (err) return res.json({ Error: "Token is not correct" });
+      else {
+        req.id = decoded.id;
+        next();
+      }
+    });
+  }
+};
+
+app.get("/adminAuth", varifyAdmin, (req, res) => {
+  return res.json({ Status: "Success" });
+});
+
+app.get("/allRequest", varifyAdmin, (req, res) => {
+  const id = req.id;
+  const sql =
+    "select HrID, HrName, HrEmail, AdharId, CompName, CompADD, CompPhone, CompWeb, companyLogo, AdminId from hr where isVerify=0 and AdminId=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.json({ Error: "Error" });
+    }
+    return res.json({ Status: "Success", request: result });
+  });
+});
+
+app.post("/handle-varify", (req, res) => {
+  // const sql="UPDATE `jobportal`.`hr` SET `isVerify` = '1' WHERE (`HrID` = '1');"
+  const id = req.body.id;
+  const sql = "UPDATE hr SET isVerify=1 where HrID=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.json({ Error: "Somethig happend wrong" });
+    }
+    return res.json({ Status: "Success" });
+  });
+});
+
+app.post("/delete-hr", (req, res) => {
+  const id = req.body.HrID;
+  const sql = "delete from hr where HrId=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.json({ Error: "something happemd wrong" });
+    }
     return res.json({ Status: "Success" });
   });
 });

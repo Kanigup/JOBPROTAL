@@ -1,18 +1,32 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AllData } from "./Component/Store/Store";
+import axios from "axios";
 
 export default function Login() {
+  axios.defaults.withCredentials = true;
   const { handleAuth } = useContext(AllData);
   const navigate = useNavigate();
-  const handleSubmit = (e) => {
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const email = e.target.elements.email.value;
     const password = e.target.elements.password.value;
-    handleAuth(true);
-    navigate("/");
-    e.target.elements.email.value = "";
-    e.target.elements.password.value = "";
+    axios
+      .post("/login-admin", { email, password })
+      .then((res) => {
+        console.log(res);
+        if (res.data.Status === "Success") {
+          handleAuth(true);
+          localStorage.setItem("token", res.data.token);
+          console.log(localStorage.getItem("token"));
+          navigate("/");
+        } else {
+          setError(res.data.Error);
+        }
+      })
+      .catch((error) => setError(error));
   };
 
   return (
@@ -30,6 +44,7 @@ export default function Login() {
                 className="form-control"
                 placeholder="Email"
                 name="email"
+                required
               />
             </div>
             <div className="mb-3">
@@ -38,6 +53,7 @@ export default function Login() {
                 className="form-control"
                 placeholder="Password"
                 name="password"
+                required
               />
               <small>
                 <Link to="#" className="text-decoration-none d-block pt-2">
@@ -45,6 +61,7 @@ export default function Login() {
                 </Link>
               </small>
             </div>
+            {error && <div className="alert alert-danger">{error}</div>}
             <button
               type="submit"
               className="btn btn-dark w-100 mb-2 bg-primary"

@@ -1,25 +1,24 @@
 import { useContext, useRef } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import "./header.css";
-// import axios from "axios";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import style from "./header.module.css";
 
 import { AllData } from "./Component/Store/Store";
 
 function Header() {
+  axios.defaults.withCredentials = true;
   const navRef = useRef();
   const { adminAuth, handleAuth, handleSelectedTab } = useContext(AllData);
   const handleLogout = () => {
-    // axios
-    //   .get("/logout")
-    //   .then(() => {
-    //     localStorage.clear();
-    //     // window.location.href = "/";
-    //     location.replace("/");
-    //   })
-    //   .catch((err) => console.log(err));
-    handleAuth(false);
+    axios
+      .get("/logout")
+      .then(() => {
+        localStorage.clear();
+        location.replace("/");
+      })
+      .catch((err) => console.log(err));
   };
 
   const showNavbar = () => {
