@@ -538,3 +538,15 @@ app.post("/delete-hr", (req, res) => {
     return res.json({ Status: "Success" });
   });
 });
+// FId, FName, FEmail, FSubject, Fdescription, FDate, AdminId;
+app.get("/feedback", varifyAdmin, (req, res) => {
+  const id = req.id;
+  const sql = "select FId,FSubject,Fdescription from feedback where AdminId=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.json({ Error: "Something happend wrong" });
+    }
+    return res.json({ Status: "Success", feedback: result });
+  });
+});

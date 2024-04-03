@@ -22,18 +22,21 @@ export default function Hr() {
       console.log(error);
     }
   };
-  const { handleAuth, isVerify } = useContext(AllFunction);
+  const { handleAuth, isVerify, handleVerify } = useContext(AllFunction);
   useEffect(() => {
     if (localStorage.getItem("token") != null) {
       axios.get("/").then((res) => {
         if (res.data.Status === "Success") {
+          const storedData = JSON.parse(localStorage.getItem("info"));
+          if (storedData.isVerify === 1) handleVerify(true);
+          else handleVerify(false);
           handleAuth("hr", true);
         } else {
           handleAuth("hr", false);
         }
       });
     }
-  });
+  }, []);
 
   return (
     <div style={{ display: "flex" }}>
