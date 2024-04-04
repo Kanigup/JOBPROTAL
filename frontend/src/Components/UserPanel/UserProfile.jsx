@@ -56,7 +56,7 @@ function UserProfile() {
   return (
     <div className="flex flex-col lg:flex-row">
       <div className={`shadow-sm ${style.first}`}>
-        <img src="bhalot.jpg" className={style.img}></img>
+        <img src="manish.jpg" className={style.img}></img>
       </div>
 
       <br />
