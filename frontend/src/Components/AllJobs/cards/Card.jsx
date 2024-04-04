@@ -16,7 +16,7 @@ export default function Card({ obj }) {
       <div className={`d-flex justify-content-between ${style.header}`}>
         <div className="flex space-x-2">
           <div className={style.icons}>
-            {/* <AiFillAmazonSquare size={40} /> */}
+            <AiFillAmazonSquare size={40} />
           </div>
 
           <div className={style.company}>
