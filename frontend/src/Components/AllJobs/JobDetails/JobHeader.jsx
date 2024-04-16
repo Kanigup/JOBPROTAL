@@ -15,6 +15,8 @@ const JobHeader = ({ jobId }) => {
             window.location.href = "/AllJobs";
           },
         });
+      } else if (res.data.Status === "Failed") {
+        toast.warning(res.data.Message);
       } else {
         alert("Error");
       }

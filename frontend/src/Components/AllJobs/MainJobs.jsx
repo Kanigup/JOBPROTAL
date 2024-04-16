@@ -5,6 +5,21 @@ import style from "./MainJobs.module.css";
 import { AllFunction } from "../store/store";
 import axios from "axios";
 export default function MainJobs() {
+  axios.defaults.withCredentials = true;
+  const { handleAuth, allJobs, handleAllJobs } = useContext(AllFunction);
+  useEffect(() => {
+    if (localStorage.getItem("token") != null) {
+      axios.get("/").then((res) => {
+        if (res.data.Status === "Success") {
+          if (res.data.type === "user") handleAuth("user", true);
+          else if (res.data.type === "hr") {
+            handleAuth("hr", true);
+            window.location.href = "/hr";
+          }
+        }
+      });
+    }
+  });
   const array = [
     {
       companyName: "Bajaj Allianz General Insurance Company Limited",
@@ -16,7 +31,6 @@ export default function MainJobs() {
       maxSalary: 100000,
     },
   ];
-  const { allJobs, handleAllJobs } = useContext(AllFunction);
   const [job, setJob] = useState(array);
   function applyFilter(newArray) {
     setJob(newArray);

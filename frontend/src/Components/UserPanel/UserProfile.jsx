@@ -46,12 +46,16 @@ function UserProfile() {
   const updateProfile = () => {
     console.log("hello");
     axios
-      .post("/update-user-data", { Name, DOB, Email, Phone, ExpYear })
+      .post("/update-user-data", { Name, Email, Phone, ExpYear })
       .then((res) => {
         if (res.data.Status === "Success") {
           location.reload(true);
         }
       });
+  };
+  const [isEdit, setEdit] = useState("");
+  const handleEdit = (type) => {
+    setEdit(type);
   };
   return (
     <div className="flex flex-col lg:flex-row">
@@ -62,24 +66,44 @@ function UserProfile() {
       <br />
       <div className="pt-5 pl-0 w-[50%] ">
         <div className={style.firstt}>
-          <EditP type="Name" values={Name} editDetails={editDetails} />
+          <EditP
+            type="Name"
+            values={Name}
+            editDetails={editDetails}
+            handleEdit={handleEdit}
+            isEdit={isEdit}
+          />
         </div>
-        {/* <br /> */}
-        {/* <div className={style.firstt}>
-          <EditP type="DOB" values={DOB} editDetails={editDetails} />
-        </div> */}
 
         <br />
         <div className={style.firstt}>
-          <EditP type="Email" values={Email} editDetails={editDetails} />
+          <EditP
+            type="Email"
+            values={Email}
+            editDetails={editDetails}
+            handleEdit={handleEdit}
+            isEdit={isEdit}
+          />
         </div>
         <br />
         <div className={style.firstt}>
-          <EditP type="Phone" values={Phone} editDetails={editDetails} />
+          <EditP
+            type="Phone"
+            values={Phone}
+            editDetails={editDetails}
+            handleEdit={handleEdit}
+            isEdit={isEdit}
+          />
         </div>
         <br />
         <div className={style.firstt}>
-          <EditP type="ExpYear" values={ExpYear} editDetails={editDetails} />
+          <EditP
+            type="ExpYear"
+            values={ExpYear}
+            editDetails={editDetails}
+            handleEdit={handleEdit}
+            isEdit={isEdit}
+          />
         </div>
         <center>
           <br />

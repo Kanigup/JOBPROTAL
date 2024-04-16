@@ -25,6 +25,11 @@ function AllRequest() {
 
   return (
     <div className="allRequest">
+      {allReq.length === 0 && (
+        <center>
+          <h1>No request avaliable</h1>
+        </center>
+      )}
       {allReq.map((data, idx) => (
         <Request key={data.HrID} idx={idx} data={data} />
       ))}

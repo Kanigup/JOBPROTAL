@@ -1,26 +1,27 @@
 import React, { useRef, useState } from "react";
 import "./EditHrprofile.css";
 
-export default function Edit({ type, values, editDetails }) {
-  const [editField, setEditField] = useState("");
+export default function Edit({
+  type,
+  values,
+  editDetails,
+  handleEdit,
+  isEdit,
+}) {
   const value = useRef();
-
-  const handleEdit = (field) => {
-    setEditField(field);
-  };
 
   const saveData = () => {
     editDetails(type, value.current.value);
-    console.log(value.current.value);
-    setEditField("");
+    // console.log(value.current.value);
+    handleEdit("");
   };
 
   const handleFocus = () => {
-    setEditField(type);
+    handleEdit(type);
   };
 
   return (
-    <tr className={`edit p-1 ${editField === type ? "input-focused" : ""}`}>
+    <tr className={`edit p-1 ${isEdit === type ? "input-focused" : ""}`}>
       <td className="w-[20%]">
         <label>{type} : </label>
       </td>
@@ -28,22 +29,22 @@ export default function Edit({ type, values, editDetails }) {
         <input
           type="text"
           className={` h-8 mt-2 me-4 w-[100%] ps-1${
-            editField === type ? " border border-primary rounded-xl" : ""
+            isEdit === type ? " border border-primary rounded-xl" : ""
           }`}
           name={type}
           defaultValue={values}
           ref={value}
-          disabled={editField !== type}
+          disabled={isEdit !== type}
           onFocus={handleFocus}
         />
       </td>
       <td className="w-[25%]">
-        {editField !== type && (
+        {isEdit !== type && (
           <button className="ms-5" onClick={() => handleEdit(type)}>
             Edit
           </button>
         )}
-        {editField === type && (
+        {isEdit === type && (
           <>
             <button
               className="btn btn-primary mt-2 me-2 h-8"
@@ -53,7 +54,7 @@ export default function Edit({ type, values, editDetails }) {
             </button>
             <button
               className="btn btn-danger mt-2 h-8"
-              onClick={() => setEditField("")}
+              onClick={() => handleEdit("")}
             >
               Cancel
             </button>

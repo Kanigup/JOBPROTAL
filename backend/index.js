@@ -66,8 +66,6 @@ app.post("/postdata-user", upload.single("resume"), (req, res) => {
         console.error("Error executing SQL query:", err);
         return res.json({ Error: "Internal server error" });
       }
-      // console.log(result.insertId);
-      // console.log("New record inserted:", result);
       const token = jwt.sign({ id: result.insertId, type: "user" }, "key", {
         expiresIn: "1d",
       });
@@ -170,7 +168,7 @@ app.post("/login-hr", (req, res) => {
   });
 });
 
-const varifyUser = (req, res, next) => {
+const verifyUser = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) return res.json({ Error: "You are not authenticated" });
   else {
@@ -185,11 +183,11 @@ const varifyUser = (req, res, next) => {
   }
 };
 
-app.get("/", varifyUser, (req, res) => {
+app.get("/", verifyUser, (req, res) => {
   return res.json({ Status: "Success", type: req.a });
 });
 
-app.get("/get-userdata", varifyUser, (req, res) => {
+app.get("/get-userdata", verifyUser, (req, res) => {
   const id = req.id;
   const sql = "select * from jobseeker where JsId=?";
   db.query(sql, [id], (err, result) => {
@@ -198,7 +196,7 @@ app.get("/get-userdata", varifyUser, (req, res) => {
   });
 });
 
-app.post("/job-post", varifyUser, (req, res) => {
+app.post("/job-post", verifyUser, (req, res) => {
   const id = req.id;
   const date = new Date().toISOString().split("T")[0];
   const sql =
@@ -226,7 +224,7 @@ app.post("/job-post", varifyUser, (req, res) => {
   });
 });
 
-app.get("/hr-total-post-job", varifyUser, (req, res) => {
+app.get("/hr-total-post-job", verifyUser, (req, res) => {
   const id = req.id;
   const sql =
     "select j.* ,COUNT(ja.JobId) as application from job j left join jobapplication ja on j.JobId=ja.JobId where j.HrID= ? group by j.JobId";
@@ -241,7 +239,7 @@ app.get("/logout", (req, res) => {
   return res.json({ Status: "Success" });
 });
 
-app.post("/update-hr-profile", varifyUser, (req, res) => {
+app.post("/update-hr-profile", verifyUser, (req, res) => {
   const id = req.id;
   const sql =
     "update hr set HrName=? ,HrEmail=?,CompADD=?,CompPhone=?,CompName=? where HrID=?";
@@ -262,7 +260,7 @@ app.post("/update-hr-profile", varifyUser, (req, res) => {
   );
 });
 
-app.post("/updateJob", varifyUser, (req, res) => {
+app.post("/updateJob", verifyUser, (req, res) => {
   const id = req.id;
   const date = new Date().toISOString().split("T")[0];
   const sql =
@@ -300,7 +298,7 @@ app.get("/AllApplicant/:id", (req, res) => {
 
 app.post(
   "/postdata-education-user",
-  varifyUser,
+  verifyUser,
   upload.single("DegreeFile"),
   (req, res) => {
     const id = req.id;
@@ -323,7 +321,7 @@ app.post(
   }
 );
 
-app.post("/postdata-experience-user", varifyUser, (req, res) => {
+app.post("/postdata-experience-user", verifyUser, (req, res) => {
   const id = req.id;
   const sql =
     "insert into experience (JsId, StartDate,EndDate,JobTitle,CompanyName,Description) values (?,?,?,?,?,?)";
@@ -353,7 +351,7 @@ app.post("/admin-register", (req, res) => {
   });
 });
 
-app.get("/educationDetails", varifyUser, (req, res) => {
+app.get("/educationDetails", verifyUser, (req, res) => {
   const id = req.id;
   const sql = "select * from education where JsId=?";
   db.query(sql, [id], (err, result) => {
@@ -361,7 +359,7 @@ app.get("/educationDetails", varifyUser, (req, res) => {
     return res.json({ Status: "Success", education: result });
   });
 });
-app.get("/experienceDetails", varifyUser, (req, res) => {
+app.get("/experienceDetails", verifyUser, (req, res) => {
   const id = req.id;
   const sql = "select * from experience where JsId=?";
   db.query(sql, [id], (err, result) => {
@@ -412,14 +410,13 @@ app.post("/update-experience", (req, res) => {
   });
 });
 
-app.post("/update-user-data", varifyUser, (req, res) => {
+app.post("/update-user-data", verifyUser, (req, res) => {
   const id = req.id;
   const sql =
     "update jobseeker set JsFName= ?, JsEmail=?,Phone=?, JsExpYear=? where JsId=?";
   const values = [
     req.body.Name,
     req.body.Email,
-    req.body.DOB,
     req.body.Phone,
     req.body.ExpYear,
     id,
@@ -439,7 +436,7 @@ app.get("/allJobs", (req, res) => {
   });
 });
 
-app.get("/allApplication", varifyUser, (req, res) => {
+app.get("/allApplication", verifyUser, (req, res) => {
   const id = req.id;
   const sql =
     "select j.JobTitle, h.CompName,h.CompWeb,ja.JaStatus from Job j inner join HR h on j.HrID=h.HrID inner join JobApplication ja on j.JObId=ja.JobId where ja.JsId=?";
@@ -449,12 +446,28 @@ app.get("/allApplication", varifyUser, (req, res) => {
   });
 });
 
-app.post("/applyJob", varifyUser, (req, res) => {
+app.post("/applyJob", verifyUser, (req, res) => {
   const id = req.id;
-  const sql = "insert into jobapplication (JsId,JobId,JaStatus) values(?,?,?)";
-  db.query(sql, [id, req.body.jobId, "pending"], (err, result) => {
-    if (err) throw err;
-    return res.json({ Status: "Success" });
+  const jobId = req.body.jobId;
+  const checkSql = "SELECT * FROM jobapplication WHERE JsId = ? AND JobId = ?";
+
+  db.query(checkSql, [id, jobId], (checkErr, checkResult) => {
+    if (checkErr) {
+      return res.json({ Error: "Error in checking details" });
+    }
+
+    if (checkResult.length > 0) {
+      return res.json({ Status: "Failed", Message: "Entry already exists" });
+    } else {
+      const insertSql =
+        "INSERT INTO jobapplication (JsId, JobId, JaStatus) VALUES (?, ?, ?)";
+      db.query(insertSql, [id, jobId, "pending"], (insertErr, insertResult) => {
+        if (insertErr) {
+          throw insertErr;
+        }
+        return res.json({ Status: "Success" });
+      });
+    }
   });
 });
 
@@ -483,7 +496,7 @@ app.post("/login-admin", (req, res) => {
   });
 });
 
-const varifyAdmin = (req, res, next) => {
+const verifyAdmin = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) return res.json({ Error: "You are not authenticated" });
   else {
@@ -497,11 +510,11 @@ const varifyAdmin = (req, res, next) => {
   }
 };
 
-app.get("/adminAuth", varifyAdmin, (req, res) => {
+app.get("/adminAuth", verifyAdmin, (req, res) => {
   return res.json({ Status: "Success" });
 });
 
-app.get("/allRequest", varifyAdmin, (req, res) => {
+app.get("/allRequest", verifyAdmin, (req, res) => {
   const id = req.id;
   const sql =
     "select HrID, HrName, HrEmail, AdharId, CompName, CompADD, CompPhone, CompWeb, companyLogo, AdminId from hr where isVerify=0 and AdminId=?";
@@ -539,7 +552,7 @@ app.post("/delete-hr", (req, res) => {
   });
 });
 // FId, FName, FEmail, FSubject, Fdescription, FDate, AdminId;
-app.get("/feedback", varifyAdmin, (req, res) => {
+app.get("/feedback", verifyAdmin, (req, res) => {
   const id = req.id;
   const sql = "select FId,FSubject,Fdescription from feedback where AdminId=?";
   db.query(sql, [id], (err, result) => {
@@ -548,5 +561,15 @@ app.get("/feedback", varifyAdmin, (req, res) => {
       return res.json({ Error: "Something happend wrong" });
     }
     return res.json({ Status: "Success", feedback: result });
+  });
+});
+
+app.get("/allCompany", verifyAdmin, (req, res) => {
+  const id = req.id;
+  const sql =
+    "select HrName,HrEmail,CompName,CompADD,CompPhone,CompWeb from hr where AdminId=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    return res.json({ AllCompany: result });
   });
 });

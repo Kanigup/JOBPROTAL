@@ -44,15 +44,13 @@ export default function Hr() {
       <div style={{ flex: 1 }} className="hrdiv">
         {/* Render the selected tab component */}
         {!isVerify && <NotVerify></NotVerify>}
-        {isVerify && selectedTab === "jobs" && (
+        {selectedTab === "jobs" && (
           <HrJobs onSelectTab={handleTabSelect} handleJobId={handleJobId} />
         )}
         {isVerify && selectedTab === "search" && (
           <SearchCandidate></SearchCandidate>
         )}
-        {isVerify && selectedTab === "setting" && (
-          <EditUserProfile></EditUserProfile>
-        )}
+        {selectedTab === "setting" && <EditUserProfile></EditUserProfile>}
         {isVerify && selectedTab === "postJob" && <PostJob></PostJob>}
         {isVerify && selectedTab === "allApplicant" && (
           <AllApplicant onSelectTab={handleTabSelect} id={jobId} />

@@ -10,7 +10,7 @@ import { AllData } from "./Component/Store/Store";
 function Header() {
   axios.defaults.withCredentials = true;
   const navRef = useRef();
-  const { adminAuth, handleAuth, handleSelectedTab } = useContext(AllData);
+  const { adminAuth } = useContext(AllData);
   const handleLogout = () => {
     axios
       .get("/logout")
@@ -41,26 +41,6 @@ function Header() {
       </div>
       <div className="flex justify-end mr-0">
         <nav ref={navRef}>
-          {adminAuth && (
-            <>
-              <button
-                className={`${style.btn} w-60`}
-                onClick={() => {
-                  handleSelectedTab("allRequest");
-                }}
-              >
-                All varification request
-              </button>
-              <button
-                className={`${style.btn} w-60`}
-                onClick={() => {
-                  handleSelectedTab("feedback");
-                }}
-              >
-                Veiw all Feedback
-              </button>
-            </>
-          )}
           {adminAuth && (
             <button className={style.btn} onClick={handleLogout}>
               Logout

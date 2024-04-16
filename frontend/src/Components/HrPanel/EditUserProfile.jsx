@@ -43,20 +43,54 @@ export default function EditUserProfile() {
         }
       });
   };
+  const [isEdit, setEdit] = useState("");
+  const handleEdit = (type) => {
+    setEdit(type);
+  };
   return (
     <div className="container mt-5">
       <div className="row p-3">
         <table>
           <tbody>
-            <Edit type="Name" values={name} editDetails={editDetails} />
+            <Edit
+              type="Name"
+              values={name}
+              editDetails={editDetails}
+              handleEdit={handleEdit}
+              isEdit={isEdit}
+            />
 
-            <Edit type="Email" values={email} editDetails={editDetails} />
+            <Edit
+              type="Email"
+              values={email}
+              editDetails={editDetails}
+              handleEdit={handleEdit}
+              isEdit={isEdit}
+            />
 
-            <Edit type="Address" values={address} editDetails={editDetails} />
+            <Edit
+              type="Address"
+              values={address}
+              editDetails={editDetails}
+              handleEdit={handleEdit}
+              isEdit={isEdit}
+            />
 
-            <Edit type="Phone" values={phone} editDetails={editDetails} />
+            <Edit
+              type="Phone"
+              values={phone}
+              editDetails={editDetails}
+              handleEdit={handleEdit}
+              isEdit={isEdit}
+            />
 
-            <Edit type="Company" values={company} editDetails={editDetails} />
+            <Edit
+              type="Company"
+              values={company}
+              editDetails={editDetails}
+              handleEdit={handleEdit}
+              isEdit={isEdit}
+            />
           </tbody>
         </table>
         <center>

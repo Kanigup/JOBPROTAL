@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import Login from "./Login.jsx";
-import Home from "./Home.jsx";
+import Home from "./Component/home/Home.jsx";
 const router = createBrowserRouter(
   createRoutesFromChildren(
     <Route path="/" element={<App />}>
