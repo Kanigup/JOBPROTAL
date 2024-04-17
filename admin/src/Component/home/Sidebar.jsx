@@ -71,7 +71,7 @@ const Sidebar = () => {
         </button>
       ) : (
         <Link to="login">
-          <button className={`${styles.btn1} btn btn-primary w-40 mt-2`}>
+          <button className={`${styles.btn1} btn btn-primary   w-40 mt-2`}>
             Login
           </button>
         </Link>
