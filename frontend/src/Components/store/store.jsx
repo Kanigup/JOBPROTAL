@@ -9,6 +9,7 @@ export const AllFunction = createContext({
   handleApplyJob: () => {},
   handleVerify: () => {},
   handleSearch: () => {},
+  handleImage: () => {},
 });
 const FunctionProvider = ({ children }) => {
   const [userAuth, setUserAuth] = useState(false);
@@ -66,6 +67,10 @@ const FunctionProvider = ({ children }) => {
   const handleHrPostJobData = (totalJob) => {
     setHrPostJobData(totalJob);
   };
+  const [image, setImage] = useState("");
+  const handleImage = (url) => {
+    setImage(url);
+  };
   return (
     <AllFunction.Provider
       value={{
@@ -86,6 +91,8 @@ const FunctionProvider = ({ children }) => {
         handleVerify,
         handleSearch,
         search,
+        handleImage,
+        image,
       }}
     >
       {children}

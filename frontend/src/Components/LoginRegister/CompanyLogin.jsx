@@ -4,15 +4,17 @@ import { useContext, useEffect } from "react";
 import { AllFunction } from "../store/store";
 export default function CompanyLogin() {
   const navigate = useNavigate();
-  const { hrData, handleHrData } = useContext(AllFunction);
+  const { hrData, handleHrData, handleImage } = useContext(AllFunction);
   const handleSubmit = (e) => {
     e.preventDefault();
     const email = e.target.elements.email.value;
     const password = e.target.elements.password.value;
     axios.post("/login-hr", { email, password }).then((res) => {
       if (res.data.Status === "Success") {
-        const { HrID, HrPwd, companyLogo, AdharId, ...rest } = res.data.info;
+        const { HrID, HrPwd, AdharId, ...rest } = res.data.info;
         localStorage.setItem("token", res.data.token);
+        // handleImage(res.data.url);
+        // localStorage.setItem("image", res.data.url);
         localStorage.setItem("info", JSON.stringify(rest));
         handleHrData(JSON.parse(localStorage.getItem("info")));
         // console.log("local data", JSON.parse(localStorage.getItem("info")));

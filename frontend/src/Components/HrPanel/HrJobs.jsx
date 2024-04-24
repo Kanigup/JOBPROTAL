@@ -10,6 +10,7 @@ export default function HrJobs({ onSelectTab, handleJobId }) {
     hrPostjobData,
     handleHrPostJobData,
     handleVerify,
+    handleImage,
   } = useContext(AllFunction);
   // onClickHandler should be a function that returns a function
   const onClickHandler = (tab) => () => {
@@ -18,6 +19,7 @@ export default function HrJobs({ onSelectTab, handleJobId }) {
   useEffect(() => {
     if (localStorage.getItem("info") != null && hrData.HrName === "") {
       const storedData = JSON.parse(localStorage.getItem("info"));
+      // handleImage(localStorage.getItem("image"));       for image
       if (storedData.isVerify === 1) handleVerify(true);
       else handleVerify(false);
       handleHrData(storedData);

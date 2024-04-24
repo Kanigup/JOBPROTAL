@@ -5,7 +5,7 @@ import styles from "./HrSidebar.module.css"; // Import CSS module for styling
 import { AllFunction } from "../store/store";
 
 const HrSidebar = ({ onSelectTab }) => {
-  const { userAuth, hrAuth } = useContext(AllFunction);
+  const { userAuth, hrAuth, image } = useContext(AllFunction);
   axios.defaults.withCredentials = true;
   const [isOpen, setIsOpen] = useState(false);
   const [showToggle, setShowToggle] = useState(false);
@@ -36,9 +36,9 @@ const HrSidebar = ({ onSelectTab }) => {
       })
       .catch((err) => console.log(err));
   };
-
   return (
     <div className={`${styles.sidebar} ${isOpen ? styles.open : ""}`}>
+      {/* <img src={image}></img> */}
       <div className={styles["sidebar-toggle"]} onClick={toggleSidebar}>
         &#9776;
       </div>

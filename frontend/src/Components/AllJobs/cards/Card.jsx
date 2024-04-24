@@ -14,13 +14,15 @@ export default function Card({ obj }) {
   const city = obj.City;
   const jobTIme = obj.JobType;
   const minimum = obj.Salary;
+  const logo = obj.companyLogo;
   const { userAuth } = useContext(AllFunction);
   return (
     <div className={style.card}>
       <div className={`d-flex justify-content-between ${style.header}`}>
-        <div className="flex space-x-2">
-          <div className={style.icons}>
-            <AiFillAmazonSquare size={40} />
+        <div className="flex space-x-2 ">
+          <div>
+            {/* <AiFillAmazonSquare size={50} /> */}
+            <img src={logo} className={style.image}></img>
           </div>
 
           <div className={style.company}>

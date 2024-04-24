@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const multer = require("multer");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const fs = require("fs");
 const salt = 10;
 app.use(express.json());
 app.use(cookieParser());
@@ -76,8 +77,8 @@ app.post("/postdata-user", upload.single("resume"), (req, res) => {
 });
 
 app.post("/postdata-hr", upload.single("logo"), (req, res) => {
-  console.log("File:", req.file); // Check if the file is received
-  console.log("Body:", req.body);
+  // console.log("File:", req.file); // Check if the file is received
+  // console.log("Body:", req.body);
   if (!req.file) return res.json({ Error: "No file uploaded" });
 
   bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
@@ -156,7 +157,14 @@ app.post("/login-hr", (req, res) => {
               expiresIn: "1d",
             });
             res.cookie("token", token);
-            return res.json({ Status: "Success", token, info: data[0] });
+            // const companyLogoBuffer = data[0].companyLogo;
+            // const base64Data = companyLogoBuffer.toString("base64");
+            // const dataUrl = `data:image/png;base64,${base64Data}`;
+            return res.json({
+              Status: "Success",
+              token,
+              info: data[0],
+            });
           } else {
             return res.json({ Error: "wrong password" });
           }
@@ -302,7 +310,7 @@ app.post(
   upload.single("DegreeFile"),
   (req, res) => {
     const id = req.id;
-    console.log("hello", id);
+    // console.log("hello", id);
     const sql =
       "insert into education (JsId,DegreeName, InstituteName,StartDate,CompletionDate,DegreeFile,Percentage) values (?,?,?,?,?,?,?)";
     const values = [
@@ -429,13 +437,119 @@ app.post("/update-user-data", verifyUser, (req, res) => {
 
 app.get("/allJobs", (req, res) => {
   const sql =
-    "SELECT job.JobId ,job.JobTitle,job.Salary,job.JobDescr, job.workLocation,job.JobExperience,job.MiniEducat,job.City, job.JobType, job.Salary, HR.CompName FROM job INNER JOIN HR ON job.HrID = HR.HrID";
-  db.query(sql, (err, result) => {
-    if (err) throw err;
-    return res.json({ Status: "Success", jobs: result });
+    "SELECT job.JobId ,job.JobTitle,job.Salary,job.JobDescr, job.workLocation,job.JobExperience,job.MiniEducat,job.City, job.JobType, job.Salary, HR.CompName,HR.companyLogo FROM job INNER JOIN HR ON job.HrID = HR.HrID";
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ Status: "Error", message: "Internal server error" });
+    }
+
+    const jobsWithUrls = results.map((job) => ({
+      ...job,
+      companyLogo: generateImageUrl(job.companyLogo), // Convert Buffer to data URL
+    }));
+
+    // console.log(jobsWithUrls);
+    return res.json({ Status: "Success", jobs: jobsWithUrls });
+  });
+});
+// const companyLogoBuffer = data[0].companyLogo;
+// const base64Data = companyLogoBuffer.toString("base64");
+// const dataUrl = `data:image/png;base64,${base64Data}`;
+app.post("/getSearchData", (req, res) => {
+  const { job, city } = req.body;
+
+  if (!job || !city) {
+    return res
+      .status(400)
+      .json({ Status: "Error", message: "Job and city are required fields." });
+  }
+
+  const sql = `
+    SELECT job.JobId, job.JobTitle, job.Salary, job.JobDescr, job.workLocation,
+           job.JobExperience, job.MiniEducat, job.City, job.JobType, job.Salary,
+           HR.CompName, HR.companyLogo
+    FROM job
+    INNER JOIN HR ON job.HrID = HR.HrID
+    WHERE JobTitle=? OR City=?
+  `;
+
+  db.query(sql, [job, city], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ Status: "Error", message: "Internal server error" });
+    }
+
+    if (results.length === 0) {
+      return res.json({
+        Status: "Success",
+        message: "No jobs found for the given criteria.",
+        jobs: [],
+      });
+    }
+
+    const jobsWithUrls = results.map((job) => ({
+      ...job,
+      companyLogo: generateImageUrl(job.companyLogo), // Convert Buffer to data URL
+    }));
+
+    return res.json({ Status: "done", jobs: jobsWithUrls });
   });
 });
 
+app.post("/filterdata", (req, res) => {
+  const { workType, workMode, location } = req.body;
+
+  // Check if all required parameters are provided
+  if (!workType || !workMode || !location) {
+    return res
+      .status(400)
+      .json({ Status: "Error", message: "All fields are required." });
+  }
+
+  const sql = `
+    SELECT job.JobId, job.JobTitle, job.Salary, job.JobDescr, job.workLocation,
+           job.JobExperience, job.MiniEducat, job.City, job.JobType, job.Salary,
+           HR.CompName, HR.companyLogo
+    FROM job
+    INNER JOIN HR ON job.HrID = HR.HrID
+    WHERE JobType=? OR workLocation=? OR City=?
+  `;
+
+  db.query(sql, [workType, workMode, location], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ Status: "Error", message: "Internal server error" });
+    }
+
+    if (results.length === 0) {
+      return res.json({
+        Status: "Success",
+        message: "No jobs found for the given criteria.",
+        jobs: [],
+      });
+    }
+
+    const jobsWithUrls = results.map((job) => ({
+      ...job,
+      companyLogo: generateImageUrl(job.companyLogo), // Convert Buffer to data URL
+    }));
+
+    return res.json({ Status: "done", jobs: jobsWithUrls });
+  });
+});
+
+function generateImageUrl(buffer) {
+  const base64Data = Buffer.from(buffer).toString("base64");
+  return `data:image/png;base64,${base64Data}`;
+}
 app.get("/allApplication", verifyUser, (req, res) => {
   const id = req.id;
   const sql =
@@ -572,24 +686,4 @@ app.get("/allCompany", verifyAdmin, (req, res) => {
     if (err) throw err;
     return res.json({ AllCompany: result });
   });
-});
-
-app.post("/getSearchData", (req, res) => {
-  const sql = "select * from job where JobTitle=? or City=?";
-  db.query(sql, [req.body.job, req.body.city], (err, result) => {
-    if (err) throw err;
-    return res.json({ Status: "done", jobs: result });
-  });
-});
-
-app.post("/filterdata", (req, res) => {
-  const sql = "select * from job where JobType=? or workLocation=? or City=?";
-  db.query(
-    sql,
-    [req.body.workType, req.body.workMode, req.body.location],
-    (err, result) => {
-      if (err) throw err;
-      return res.json({ Status: "done", jobs: result });
-    }
-  );
 });

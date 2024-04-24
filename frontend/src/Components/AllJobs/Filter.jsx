@@ -24,6 +24,14 @@ export default function Filter() {
   };
 
   const handleClear = () => {
+    axios.get("/allJobs").then((res) => {
+      if (res.data.Status === "Success") {
+        console.log(res.data.jobs);
+        const jobs = res.data.jobs;
+        jobs.reverse();
+        handleAllJobs(jobs);
+      }
+    });
     setWorkType("");
     setWorkMode("");
     setLocation("");
