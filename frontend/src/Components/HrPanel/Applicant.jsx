@@ -13,9 +13,6 @@ function Applicant({ applicant }) {
         <td>
           <button>Resume</button>
         </td>
-        <td>
-          <button>View Profile</button>
-        </td>
       </tr>
     </>
   );

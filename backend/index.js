@@ -437,7 +437,7 @@ app.post("/update-user-data", verifyUser, (req, res) => {
 
 app.get("/allJobs", (req, res) => {
   const sql =
-    "SELECT job.JobId ,job.JobTitle,job.Salary,job.JobDescr, job.workLocation,job.JobExperience,job.MiniEducat,job.City, job.JobType, job.Salary, HR.CompName,HR.companyLogo FROM job INNER JOIN HR ON job.HrID = HR.HrID";
+    "SELECT job.JobId ,job.JobTitle,job.Salary,job.JobDescr, job.workLocation,job.Active,job.JobExperience,job.MiniEducat,job.City, job.JobType, job.Salary, HR.CompName,HR.companyLogo FROM job INNER JOIN HR ON job.HrID = HR.HrID";
 
   db.query(sql, (err, results) => {
     if (err) {
@@ -451,14 +451,14 @@ app.get("/allJobs", (req, res) => {
       ...job,
       companyLogo: generateImageUrl(job.companyLogo), // Convert Buffer to data URL
     }));
-
+    const temp = jobsWithUrls.filter((job) => {
+      return job.Active !== 0; // Using strict inequality for comparison
+    });
     // console.log(jobsWithUrls);
-    return res.json({ Status: "Success", jobs: jobsWithUrls });
+    // console.log(temp.length);
+    return res.json({ Status: "Success", jobs: temp });
   });
 });
-// const companyLogoBuffer = data[0].companyLogo;
-// const base64Data = companyLogoBuffer.toString("base64");
-// const dataUrl = `data:image/png;base64,${base64Data}`;
 app.post("/getSearchData", (req, res) => {
   const { job, city } = req.body;
 
@@ -497,8 +497,10 @@ app.post("/getSearchData", (req, res) => {
       ...job,
       companyLogo: generateImageUrl(job.companyLogo), // Convert Buffer to data URL
     }));
-
-    return res.json({ Status: "done", jobs: jobsWithUrls });
+    const temp = jobsWithUrls.filter((job) => {
+      return job.Active !== 0; // Using strict inequality for comparison
+    });
+    return res.json({ Status: "done", jobs: temp });
   });
 });
 
@@ -541,8 +543,10 @@ app.post("/filterdata", (req, res) => {
       ...job,
       companyLogo: generateImageUrl(job.companyLogo), // Convert Buffer to data URL
     }));
-
-    return res.json({ Status: "done", jobs: jobsWithUrls });
+    const temp = jobsWithUrls.filter((job) => {
+      return job.Active !== 0; // Using strict inequality for comparison
+    });
+    return res.json({ Status: "done", jobs: temp });
   });
 });
 
@@ -559,8 +563,49 @@ app.get("/allApplication", verifyUser, (req, res) => {
     return res.json({ Status: "Success", application: result });
   });
 });
-
 app.post("/applyJob", verifyUser, (req, res) => {
+  const id = req.id;
+  const jobId = req.body.jobId;
+  const checkSql = "SELECT * FROM jobapplication WHERE JsId = ? AND JobId = ?";
+  const fetchEducationSql = "SELECT * FROM education WHERE JsId = ?";
+
+  db.query(checkSql, [id, jobId], (checkErr, result) => {
+    if (checkErr) {
+      return res.json({ Error: "Error in checking details" });
+    }
+
+    if (result.length > 0) {
+      return res.json({
+        Status: "Failed",
+        Message: "You are already applied for this job",
+      });
+    }
+
+    db.query(fetchEducationSql, [id], (eduErr, eduResult) => {
+      if (eduErr) {
+        return res.json({ Error: "Error fetching education details" });
+      }
+
+      if (eduResult.length === 0) {
+        return res.json({
+          Status: "Failed",
+          Message: "You are not eligible",
+        });
+      }
+
+      const insertSql =
+        "INSERT INTO jobapplication (JsId, JobId, JaStatus) VALUES (?, ?, ?)";
+      db.query(insertSql, [id, jobId, "pending"], (insertErr, insertResult) => {
+        if (insertErr) {
+          return res.json({ Error: "Error applying for the job" });
+        }
+        return res.json({ Status: "Success" });
+      });
+    });
+  });
+});
+
+app.post("/applyob", verifyUser, (req, res) => {
   const id = req.id;
   const jobId = req.body.jobId;
   const checkSql = "SELECT * FROM jobapplication WHERE JsId = ? AND JobId = ?";
@@ -685,5 +730,13 @@ app.get("/allCompany", verifyAdmin, (req, res) => {
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     return res.json({ AllCompany: result });
+  });
+});
+
+app.get("/deactive", (req, res) => {
+  const sql = "UPDATE job SET Active = 0 WHERE JobId = ?";
+  db.query(sql, [req.body.id], (err, result) => {
+    if (err) throw err;
+    return res.json({ Status: "done" });
   });
 });

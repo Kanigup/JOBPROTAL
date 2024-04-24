@@ -17,8 +17,6 @@ const JobHeader = ({ jobId }) => {
         });
       } else if (res.data.Status === "Failed") {
         toast.warning(res.data.Message);
-      } else {
-        alert("Error");
       }
     });
   }

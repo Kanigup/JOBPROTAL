@@ -2,6 +2,8 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AllFunction } from "../store/store";
+import { toast } from "react-toastify";
+
 const Register = () => {
   const navigate = useNavigate();
   const { handleAuth } = useContext(AllFunction);
@@ -17,8 +19,23 @@ const Register = () => {
     experience: "",
   });
   const [resume, setResume] = useState(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if all fields are filled
+    for (const key in formData) {
+      if (!formData[key]) {
+        return toast.error(
+          `Please fill in ${key === "firstName" ? "First Name" : key}`
+        );
+      }
+    }
+
+    // Check password length
+    if (formData.password.length < 8) {
+      return toast.error("Password must be at least 8 characters long.");
+    }
 
     try {
       const formdata = new FormData();
@@ -46,8 +63,6 @@ const Register = () => {
           Phone: formdata.get("phone"),
           JsExpYear: formdata.get("experience"),
         };
-        console.log("token", res.data.token);
-        console.log("info", JSON.stringify(data));
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("info", JSON.stringify(data));
         handleAuth("user", true);
@@ -57,7 +72,9 @@ const Register = () => {
       }
     } catch (error) {
       console.error("Error while submitting form:", error);
-      alert("An error occurred while submitting the form. Please try again.");
+      toast.error(
+        "An error occurred while submitting the form. Please try again."
+      );
     }
   };
 
@@ -74,13 +91,14 @@ const Register = () => {
   };
 
   return (
-    <div className="container  justify-content-center align-items-center">
+    <div className="container justify-content-center align-items-center">
       <div className="card p-4" style={{ width: "575px", background: "#333" }}>
         <center>
           <h3 className="text-white mb-4">Registration Form</h3>
         </center>
         <form onSubmit={handleSubmit}>
           <div className="row mb-3">
+            {/* First Name */}
             <div className="col">
               <label htmlFor="firstName" className="form-label text-white">
                 First Name
@@ -95,6 +113,7 @@ const Register = () => {
                 onChange={handleInputChange}
               />
             </div>
+            {/* Last Name */}
             <div className="col">
               <label htmlFor="lastName" className="form-label text-white">
                 Last Name
@@ -111,6 +130,7 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Contact Number */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="phone" className="form-label text-white">
@@ -128,6 +148,7 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Email */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="email" className="form-label text-white">
@@ -145,6 +166,7 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Date of Birth */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="dob" className="form-label text-white">
@@ -162,6 +184,7 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Gender */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="gender" className="form-label text-white">
@@ -184,6 +207,7 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Adhar Number */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="adhar" className="form-label text-white">
@@ -200,9 +224,11 @@ const Register = () => {
               />
             </div>
           </div>
+
+          {/* Experience */}
           <div className="row mb-3">
             <div className="col">
-              <label htmlFor="adhar" className="form-label text-white">
+              <label htmlFor="experience" className="form-label text-white">
                 Experience
               </label>
               <input
@@ -217,6 +243,7 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Upload Resume */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="resume" className="form-label text-white">
@@ -234,6 +261,7 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Password */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="password" className="form-label text-white">
@@ -246,16 +274,19 @@ const Register = () => {
                 name="password"
                 placeholder="Password"
                 required
+                minLength="8"
                 onChange={handleInputChange}
               />
             </div>
           </div>
 
+          {/* Submit Button */}
           <button type="submit" className="btn btn-dark w-100 mb-2 bg-primary">
             REGISTER
           </button>
         </form>
 
+        {/* Login Link */}
         <p className="mt-2 text-white">
           Already have an account?
           <Link to="/login" className="text-decoration-none text-white">

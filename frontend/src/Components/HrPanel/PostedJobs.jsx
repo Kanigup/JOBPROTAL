@@ -21,6 +21,14 @@ export default function PostedJobs({ job, onSelectTab, handleJobId }) {
     workLocation: job.workLocation,
     lastDate: job.lastDate,
   });
+  const handleDeactive = () => {
+    const id = job.JobId;
+    axios.get("/deactive", { id }).then((res) => {
+      if (res.data.Status === "done") {
+        toast.success("Deactivate successfully");
+      }
+    });
+  };
   const { hrPostjobData, handleHrData } = useContext(AllFunction);
   const openPopup = () => {
     setIsPopupOpen(true);
@@ -89,6 +97,15 @@ export default function PostedJobs({ job, onSelectTab, handleJobId }) {
           onClick={openPopup}
         >
           Update
+        </button>
+      </div>
+      <div className="vertical-line"></div>
+      <div className="w-[10%]">
+        <button
+          className="btn btn-secondary btn-lg mt-2 h-[65%] pt-1"
+          onClick={handleDeactive}
+        >
+          Deactive
         </button>
       </div>
       {isPopupOpen && (
@@ -206,6 +223,7 @@ export default function PostedJobs({ job, onSelectTab, handleJobId }) {
                         className="form-control"
                         value={formData.lastDate}
                         onChange={handleChange}
+                        min={new Date().toISOString().split("T")[0]}
                       />
                     </div>
                   </div>

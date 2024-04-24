@@ -2,6 +2,8 @@ import React, { useState, useContext } from "react";
 import "./PostJob.css"; // Import custom CSS file
 import axios from "axios";
 import { AllFunction } from "../store/store";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PostJob = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +16,7 @@ const PostJob = () => {
     salary: "",
     jobType: "",
     workLocation: "",
-    lastDate: "", // Add new state for work location
+    lastDate: "",
   });
   const { addHrPostJob } = useContext(AllFunction);
   const handleChange = (e) => {
@@ -24,6 +26,44 @@ const PostJob = () => {
   axios.defaults.withCredentials = true;
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Check if all fields are filled
+    const {
+      jobTitle,
+      jobDescription,
+      experience,
+      minimumEducation,
+      city,
+      role,
+      salary,
+      jobType,
+      workLocation,
+      lastDate,
+    } = formData;
+
+    if (
+      !jobTitle ||
+      !jobDescription ||
+      !experience ||
+      !minimumEducation ||
+      !city ||
+      !role ||
+      !salary ||
+      !jobType ||
+      !workLocation ||
+      !lastDate
+    ) {
+      return toast.error("Please fill in all fields.");
+    }
+
+    // Check if lastDate is not past or today's date
+    const currentDate = new Date();
+    const selectedDate = new Date(lastDate);
+
+    if (selectedDate <= currentDate) {
+      return toast.error("Please select a future date for Last Date.");
+    }
+
     axios.post("/job-post", formData).then((res) => {
       if (res.data.Status === "Success") {
         // addHrPostJob(formData);
@@ -34,21 +74,30 @@ const PostJob = () => {
 
   return (
     <div className="container mt-5">
+      <ToastContainer />
       <div className="row justify-content-center">
         <div className="col-lg-8 w-full">
           <form onSubmit={handleSubmit} className="job-form">
             <div className="form-row" style={{ marginLeft: "100px" }}>
-              {/* Existing input fields */}
               {/* Job Title */}
               <div className="form-group col-md-10">
                 <label>Job Title:</label>
-                <input
-                  type="text"
+                <select
                   name="jobTitle"
                   className="form-control"
                   value={formData.jobTitle}
                   onChange={handleChange}
-                />
+                  required
+                >
+                  <option value="">Select Job Title</option>
+                  <option value="SDE">SDE</option>
+                  <option value="Frontend Developer">Frontend Developer</option>
+                  <option value="Backend Developer">Backend Developer</option>
+                  <option value="Mern Stack">Mern Stack</option>
+                  <option value="Java full stack developer">
+                    Java full stack developer
+                  </option>
+                </select>
               </div>
               {/* Experience */}
               <div className="form-group col-md-10">
@@ -59,20 +108,32 @@ const PostJob = () => {
                   className="form-control"
                   value={formData.experience}
                   onChange={handleChange}
+                  required
                 />
               </div>
               {/* City */}
               <div className="form-group col-md-10">
                 <label>City:</label>
-                <input
-                  type="text"
+                <select
                   name="city"
                   className="form-control"
                   value={formData.city}
                   onChange={handleChange}
-                />
+                  required
+                >
+                  <option value="">Select City</option>
+                  <option value="Indore">Indore</option>
+                  <option value="Bhopal">Bhopal</option>
+                  <option value="Pune">Pune</option>
+                  <option value="Bangalore">Bangalore</option>
+                  <option value="Hyderabad">Hyderabad</option>
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Kolkata">Kolkata</option>
+                  <option value="Ahmedabad">Ahmedabad</option>
+                  <option value="Chennai">Chennai</option>
+                </select>
               </div>
-              {/* Salary */}
               <div className="form-group col-md-10">
                 <label>Salary:</label>
                 <input
@@ -83,7 +144,6 @@ const PostJob = () => {
                   onChange={handleChange}
                 />
               </div>
-              {/* Job Description */}
               <div className="form-group col-md-10">
                 <label>Job Description:</label>
                 <textarea
@@ -93,18 +153,21 @@ const PostJob = () => {
                   onChange={handleChange}
                 ></textarea>
               </div>
-              {/* Minimum Education */}
               <div className="form-group col-md-10">
                 <label>Minimum Education:</label>
-                <input
-                  type="text"
+                <select
                   name="minimumEducation"
                   className="form-control"
                   value={formData.minimumEducation}
                   onChange={handleChange}
-                />
+                >
+                  <option value="">Select Education</option>
+                  <option value="12th pass">12th pass</option>
+                  <option value="Graduation">Graduation</option>
+                  <option value="PsotGraduation">PostGraduation</option>
+                  <option value="Deploma">Deploma</option>
+                </select>
               </div>
-              {/* Role */}
               <div className="form-group col-md-10">
                 <label>Role:</label>
                 <input
@@ -115,7 +178,6 @@ const PostJob = () => {
                   onChange={handleChange}
                 />
               </div>
-              {/* Job Type */}
               <div className="form-group col-md-10">
                 <label>Job Type:</label>
                 <select
@@ -130,7 +192,6 @@ const PostJob = () => {
                   <option value="both">Both</option>
                 </select>
               </div>
-              {/* Work Location */}
               <div className="form-group col-md-10">
                 <label>Work Location:</label>
                 <select
@@ -153,10 +214,11 @@ const PostJob = () => {
                   className="form-control"
                   value={formData.lastDate}
                   onChange={handleChange}
+                  required
+                  min={new Date().toISOString().split("T")[0]}
                 />
               </div>
             </div>
-
             <div className="row">
               <div className="col-md-12 text-center mt-4">
                 <button type="submit" className="btn btn-primary w-[30%]">
@@ -170,5 +232,4 @@ const PostJob = () => {
     </div>
   );
 };
-
 export default PostJob;
