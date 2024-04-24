@@ -20,7 +20,13 @@ const JobDetail = ({ job }) => {
                 <strong>Experience:</strong> {job.JobExperience}
               </p>
               <p>
-                <strong>Location</strong> Kolkata, Kolkata, West Bengal - 700080
+                <strong>Type</strong>{" "}
+                {job.workLocation === "wfh"
+                  ? " Work from home"
+                  : job.workLocation}
+              </p>
+              <p>
+                <strong>Location</strong> {job.City}
               </p>
             </div>
 

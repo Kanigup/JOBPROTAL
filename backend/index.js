@@ -573,3 +573,23 @@ app.get("/allCompany", verifyAdmin, (req, res) => {
     return res.json({ AllCompany: result });
   });
 });
+
+app.post("/getSearchData", (req, res) => {
+  const sql = "select * from job where JobTitle=? or City=?";
+  db.query(sql, [req.body.job, req.body.city], (err, result) => {
+    if (err) throw err;
+    return res.json({ Status: "done", jobs: result });
+  });
+});
+
+app.post("/filterdata", (req, res) => {
+  const sql = "select * from job where JobType=? or workLocation=? or City=?";
+  db.query(
+    sql,
+    [req.body.workType, req.body.workMode, req.body.location],
+    (err, result) => {
+      if (err) throw err;
+      return res.json({ Status: "done", jobs: result });
+    }
+  );
+});

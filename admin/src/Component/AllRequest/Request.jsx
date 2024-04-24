@@ -23,7 +23,7 @@ export default function Request({ data, idx }) {
       <div className="vertical-line"></div>
       <div className="w-[10%]">
         <button
-          className="btn btn-secondary btn-lg mt-2 h-[65%] pt-1"
+          className="btn btn-secondary btn-lg mt-2 h-[65%] w-[90%] pt-2"
           onClick={() => {
             handleHrId(idx);
             handleSelectedTab("viewProfile");

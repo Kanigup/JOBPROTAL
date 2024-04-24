@@ -5,11 +5,13 @@ import { MdHomeFilled } from "react-icons/md";
 import { FaWallet } from "react-icons/fa";
 import { SlArrowRight } from "react-icons/sl";
 import { Link } from "react-router-dom";
+import { MdLocationPin } from "react-icons/md";
 import { AllFunction } from "../../store/store";
 export default function Card({ obj }) {
   const companyName = obj.CompName;
   const jobRole = obj.JobTitle;
   const jobType = obj.workLocation;
+  const city = obj.City;
   const jobTIme = obj.JobType;
   const minimum = obj.Salary;
   const { userAuth } = useContext(AllFunction);
@@ -34,14 +36,24 @@ export default function Card({ obj }) {
           </Link>
         </div>
       </div>
-      <div className="d-flex align-items-center mt-2 ms-1">
-        <MdHomeFilled size={20} />
-        <p className="ps-2 mb-0 fs-6">{jobType}</p>
-      </div>
-      <div className="d-flex align-items-center ms-1">
+      <div className="d-flex align-items-center ms-2">
         <FaWallet className="me-2 mt-1" />
         <p className="mb-0 mt-1">₹{minimum}</p>
       </div>
+      <div className="d-flex">
+        <div className="d-flex align-items-center mt-2 ms-1">
+          <MdHomeFilled size={20} />
+          <p className="ps-2 mb-0 fs-6">{jobType}</p>
+        </div>
+        <div
+          className="d-flex align-items-center mt-2 ms-5"
+          style={{ marginRight: "100px" }}
+        >
+          <MdLocationPin size={20} />
+          <p className="ps-2 mb-0 fs-6">{city}</p>
+        </div>
+      </div>
+
       <div className={style.time}>
         <p className="me-2 ms-1">{jobTIme}</p>
         <p className="ms-2">Test required</p>

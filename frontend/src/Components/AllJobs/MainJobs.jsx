@@ -6,7 +6,8 @@ import { AllFunction } from "../store/store";
 import axios from "axios";
 export default function MainJobs() {
   axios.defaults.withCredentials = true;
-  const { handleAuth, allJobs, handleAllJobs } = useContext(AllFunction);
+  const { handleAuth, allJobs, handleAllJobs, search } =
+    useContext(AllFunction);
   useEffect(() => {
     if (localStorage.getItem("token") != null) {
       axios.get("/").then((res) => {
@@ -36,11 +37,14 @@ export default function MainJobs() {
     setJob(newArray);
   }
   useEffect(() => {
-    if (allJobs === null) {
+    console.log(search);
+    if (allJobs === null && search === null) {
       axios.get("/allJobs").then((res) => {
         if (res.data.Status === "Success") {
-          // console.log(res.data.jobs);
-          handleAllJobs(res.data.jobs);
+          console.log(res.data.jobs);
+          const jobs = res.data.jobs;
+          jobs.reverse();
+          handleAllJobs(jobs);
         }
       });
     }

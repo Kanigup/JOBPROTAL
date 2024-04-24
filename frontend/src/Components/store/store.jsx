@@ -8,6 +8,7 @@ export const AllFunction = createContext({
   handleAllJobs: () => {},
   handleApplyJob: () => {},
   handleVerify: () => {},
+  handleSearch: () => {},
 });
 const FunctionProvider = ({ children }) => {
   const [userAuth, setUserAuth] = useState(false);
@@ -16,6 +17,13 @@ const FunctionProvider = ({ children }) => {
   const [jobId, setJobId] = useState(null);
   const handleAllJobs = (data) => {
     setAllJobs(data);
+  };
+  const [search, setSearch] = useState(null);
+  const handleSearch = (temp) => {
+    // console.log(temp);
+
+    setSearch({ ...temp });
+    console.log(search);
   };
   const [hrData, setHrData] = useState({
     HrName: "",
@@ -76,6 +84,8 @@ const FunctionProvider = ({ children }) => {
         jobId,
         isVerify,
         handleVerify,
+        handleSearch,
+        search,
       }}
     >
       {children}

@@ -10,8 +10,10 @@ function AllFeedback() {
     if (feedback === null) {
       axios.get("/feedback").then((res) => {
         if (res.data.Status === "Success") {
-          console.log(res.data.feedback);
-          setFeedback(res.data.feedback);
+          // console.log(res.data.feedback);
+          const temp = res.data.feedback;
+          temp.reverse();
+          setFeedback(temp);
         }
       });
     }

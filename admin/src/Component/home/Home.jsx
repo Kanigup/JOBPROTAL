@@ -6,6 +6,7 @@ import AllFeedback from "../feedback/AllFeedback";
 import "./home.css";
 import AllCompany from "./AllCompany";
 import { AllData } from "../Store/Store";
+import ViewProfile from "../AllRequest/ViewProfile";
 export default function Home() {
   axios.defaults.withCredentials = true;
   const { adminAuth, selectedTab, handleAuth } = useContext(AllData);
@@ -24,6 +25,9 @@ export default function Home() {
       <Sidebar />
       <div style={{ flex: 1 }} className="hrdiv">
         {adminAuth && selectedTab === "allRequest" && <AllRequest></AllRequest>}
+        {adminAuth && selectedTab === "viewProfile" && (
+          <ViewProfile></ViewProfile>
+        )}
         {adminAuth && selectedTab === "allFeedback" && (
           <AllFeedback></AllFeedback>
         )}

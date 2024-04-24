@@ -2,7 +2,7 @@
 /* PostJob.css */
 
 .container {
-/* Set a maximum height */
+  /* Set a maximum height */
   height: 90vh;
   overflow-y: auto; /* Enable vertical scrollbar */
   scroll-behavior: smooth;
@@ -13,7 +13,7 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  
+
   overflow-y: scroll;
 }
 
