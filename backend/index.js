@@ -37,18 +37,17 @@ app.listen(port, () => {
   console.log(`server is running on the port ${port}`);
 });
 
-app.post("/postdata-user", upload.single("resume"), (req, res) => {
+app.post("/postdata-user", upload.single("profilePhoto"), (req, res) => {
   // Generate salt for password hashing
-
-  // Hash the password
   bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
     if (err) {
       console.error("Error hashing password:", err);
       return res.json({ Error: "Internal server error" });
     }
+
     // Prepare SQL query
     const sql =
-      "INSERT INTO JobSeeker (JsFName, JsLName, JsEmail, AdharId, DOB, Phone, Gen, Resume, JsExpYear, pwd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO JobSeeker (JsFName, JsLName, JsEmail, AdharId, DOB, Phone, Gen, Resume, JsExpYear, pwd, ProfilePhoto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     const values = [
       req.body.firstName,
       req.body.lastName,
@@ -57,9 +56,10 @@ app.post("/postdata-user", upload.single("resume"), (req, res) => {
       req.body.dob,
       req.body.phone,
       req.body.gender,
-      req.file.buffer, // Use req.file.buffer for file data
+      req.body.url, // Assuming URL for resume
       req.body.experience,
       hash, // Storing hashed password in the database
+      req.file.buffer, // Profile photo as BLOB data
     ];
     // Execute SQL query
     db.query(sql, values, (err, result) => {
@@ -128,6 +128,9 @@ app.post("/login-user", (req, res) => {
               expiresIn: "1d",
             });
             res.cookie("token", token);
+            const profilePhoto = generateImageUrl(data[0].ProfilePhoto);
+
+            data[0].ProfilePhoto = profilePhoto;
             return res.json({ Status: "Success", token, info: data[0] });
           } else {
             return res.json({ Error: "Password not correct" });
@@ -190,6 +193,35 @@ const verifyUser = (req, res, next) => {
     });
   }
 };
+
+app.get("/get-user-image", verifyUser, (req, res) => {
+  const id = req.id;
+  const sql = "select ProfilePhoto from jobseeker where JsId=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.error("Error fetching user image:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (result.length === 0 || !result[0].ProfilePhoto) {
+      return res.status(404).json({ error: "User image not found" });
+    }
+
+    try {
+      const image = generateImageUrl(result[0].ProfilePhoto);
+
+      res.json({ Status: "done", imageUrl: image });
+    } catch (error) {
+      console.error("Error generating image URL:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+});
+
+function generateImageUrl(buffer) {
+  const base64Data = Buffer.from(buffer, "binary").toString("base64");
+  return `data:image/png;base64,${base64Data}`;
+}
 
 app.get("/", verifyUser, (req, res) => {
   return res.json({ Status: "Success", type: req.a });

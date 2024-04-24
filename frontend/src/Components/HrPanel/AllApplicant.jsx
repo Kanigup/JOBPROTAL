@@ -44,6 +44,7 @@ function AllApplicant({ onSelectTab, id }) {
               <th scope="col">Email</th>
               <th scope="col">Contact</th>
               <th scope="col">Resume</th>
+              <th scope="col">Contact Here</th>
             </tr>
           </thead>
           {Applicantdata.length > 0 ? (

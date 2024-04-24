@@ -47,19 +47,20 @@ const HrSidebar = ({ onSelectTab }) => {
           Jobs
         </li>
         <div className={styles.line}></div>
-        <li
+        {/* <li
           onClick={() => handleTabClick("search")}
           className={styles.sidename}
         >
           Search Candidate
         </li>
-        <div className={styles.line}></div>
+        <div className={styles.line}></div> */}
         <li
           onClick={() => handleTabClick("setting")}
           className={styles.sidename}
         >
           profile
         </li>
+        <div className={styles.line}></div>
       </ul>
 
       {!hrAuth && (

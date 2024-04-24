@@ -23,6 +23,21 @@ function UserProfile() {
       });
     }
   }, []);
+  const [image, setImage] = useState(null);
+  useEffect(() => {
+    if (localStorage.getItem("token") && !image) {
+      axios
+        .get("/get-user-image")
+        .then((res) => {
+          if (res.data.imageUrl) {
+            setImage(res.data.imageUrl);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user image:", error);
+        });
+    }
+  }, [image]);
   useEffect(() => {
     if (localStorage.getItem("token") != null && userData.JsName === "") {
       axios.get("/get-userdata").then((res) => {
@@ -60,7 +75,7 @@ function UserProfile() {
   return (
     <div className="flex flex-col lg:flex-row">
       <div className={`shadow-sm ${style.first}`}>
-        <img src="manish.jpg" className={style.img}></img>
+        <img src={image} className={style.img}></img>
       </div>
 
       <br />

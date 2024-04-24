@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AllFunction } from "../store/store";
-import { toast } from "react-toastify";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -16,9 +15,10 @@ const Register = () => {
     dob: "",
     gender: "",
     adhar: "",
+    url: "",
     experience: "",
+    profilePhoto: null,
   });
-  const [resume, setResume] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,42 +26,57 @@ const Register = () => {
     // Check if all fields are filled
     for (const key in formData) {
       if (!formData[key]) {
-        return toast.error(
+        return alert(
           `Please fill in ${key === "firstName" ? "First Name" : key}`
         );
       }
     }
 
-    // Check password length
-    if (formData.password.length < 8) {
-      return toast.error("Password must be at least 8 characters long.");
+    // Check minimum age (18 years)
+    const currentDate = new Date();
+    const dobDate = new Date(formData.dob);
+    const ageDiff = currentDate.getFullYear() - dobDate.getFullYear();
+    if (ageDiff < 18) {
+      return alert("You must be at least 18 years old to register.");
+    }
+
+    // Check if experience is not negative
+    if (formData.experience < 0) {
+      return alert("Experience cannot be negative.");
+    }
+
+    // Check Aadhar number length (12 digits)
+    if (formData.adhar.length !== 12) {
+      return alert("Aadhar number must be exactly 12 digits.");
+    }
+
+    // Check contact number length (10 digits)
+    if (formData.phone.length !== 10) {
+      return alert("Contact number must be exactly 10 digits.");
+    }
+
+    // Check password length (at least 6 characters)
+    if (formData.password.length < 6) {
+      return alert("Password must be at least 6 characters long.");
     }
 
     try {
       const formdata = new FormData();
-      formdata.append("firstName", formData.firstName);
-      formdata.append("lastName", formData.lastName);
-      formdata.append("phone", formData.phone);
-      formdata.append("email", formData.email);
-      formdata.append("password", formData.password);
-      formdata.append("dob", formData.dob);
-      formdata.append("gender", formData.gender);
-      formdata.append("adhar", formData.adhar);
-      formdata.append("resume", resume);
-      formdata.append("experience", formData.experience);
-
-      const res = await axios.post("/postdata-user", formdata, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      for (const key in formData) {
+        formdata.append(key, formData[key]);
+      }
+      const res = await axios.post("/postdata-user", formdata);
 
       if (res.data.Status === "Success") {
         const data = {
-          JsFName: formdata.get("firstName"),
-          JsLName: formdata.get("lastName"),
-          JsEmail: formdata.get("email"),
-          DOB: formdata.get("dob"),
-          Phone: formdata.get("phone"),
-          JsExpYear: formdata.get("experience"),
+          JsFName: formData.firstName,
+          JsLName: formData.lastName,
+          JsEmail: formData.email,
+          DOB: formData.dob,
+          Phone: formData.phone,
+          JsExpYear: formData.experience,
+          Resume: formData.url,
+          ProfilePhoto: formData.profilePhoto.name,
         };
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("info", JSON.stringify(data));
@@ -72,9 +87,7 @@ const Register = () => {
       }
     } catch (error) {
       console.error("Error while submitting form:", error);
-      toast.error(
-        "An error occurred while submitting the form. Please try again."
-      );
+      alert("An error occurred while submitting the form. Please try again.");
     }
   };
 
@@ -86,8 +99,18 @@ const Register = () => {
     }));
   };
 
-  const handleFileChange = (e) => {
-    setResume(e.target.files[0]);
+  const handleProfilePhotoChange = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      profilePhoto: e.target.files[0],
+    }));
+  };
+
+  const handleUrlChange = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      url: e.target.value,
+    }));
   };
 
   return (
@@ -98,7 +121,6 @@ const Register = () => {
         </center>
         <form onSubmit={handleSubmit}>
           <div className="row mb-3">
-            {/* First Name */}
             <div className="col">
               <label htmlFor="firstName" className="form-label text-white">
                 First Name
@@ -113,7 +135,6 @@ const Register = () => {
                 onChange={handleInputChange}
               />
             </div>
-            {/* Last Name */}
             <div className="col">
               <label htmlFor="lastName" className="form-label text-white">
                 Last Name
@@ -130,7 +151,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Contact Number */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="phone" className="form-label text-white">
@@ -148,7 +168,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Email */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="email" className="form-label text-white">
@@ -166,7 +185,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Date of Birth */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="dob" className="form-label text-white">
@@ -184,7 +202,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Gender */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="gender" className="form-label text-white">
@@ -207,25 +224,23 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Adhar Number */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="adhar" className="form-label text-white">
-                Adhar Number
+                Aadhar Number
               </label>
               <input
                 type="number"
                 className="form-control"
                 id="adhar"
                 name="adhar"
-                placeholder="Adhar Number"
+                placeholder="Aadhar Number"
                 required
                 onChange={handleInputChange}
               />
             </div>
           </div>
 
-          {/* Experience */}
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="experience" className="form-label text-white">
@@ -236,32 +251,47 @@ const Register = () => {
                 className="form-control"
                 id="experience"
                 name="experience"
-                placeholder="How many years of experience have you had?"
+                placeholder="Years of Experience"
                 required
                 onChange={handleInputChange}
               />
             </div>
           </div>
 
-          {/* Upload Resume */}
           <div className="row mb-3">
             <div className="col">
-              <label htmlFor="resume" className="form-label text-white">
-                Upload Resume
+              <label htmlFor="url" className="form-label text-white">
+                Resume URL
               </label>
               <input
-                type="file"
+                type="text"
                 className="form-control"
-                id="resume"
-                name="resume"
-                placeholder="Upload Resume"
-                accept=".pdf, .doc, .docx"
-                onChange={handleFileChange}
+                id="url"
+                name="url"
+                placeholder="Resume URL"
+                required
+                onChange={handleUrlChange}
               />
             </div>
           </div>
 
-          {/* Password */}
+          <div className="row mb-3">
+            <div className="col">
+              <label htmlFor="profilePhoto" className="form-label text-white">
+                Profile Photo
+              </label>
+              <input
+                type="file"
+                id="profilePhoto"
+                name="profilePhoto"
+                className="form-control"
+                accept="image/*"
+                onChange={handleProfilePhotoChange}
+                required
+              />
+            </div>
+          </div>
+
           <div className="row mb-3">
             <div className="col">
               <label htmlFor="password" className="form-label text-white">
@@ -274,19 +304,17 @@ const Register = () => {
                 name="password"
                 placeholder="Password"
                 required
-                minLength="8"
+                minLength="6"
                 onChange={handleInputChange}
               />
             </div>
           </div>
 
-          {/* Submit Button */}
           <button type="submit" className="btn btn-dark w-100 mb-2 bg-primary">
             REGISTER
           </button>
         </form>
 
-        {/* Login Link */}
         <p className="mt-2 text-white">
           Already have an account?
           <Link to="/login" className="text-decoration-none text-white">
