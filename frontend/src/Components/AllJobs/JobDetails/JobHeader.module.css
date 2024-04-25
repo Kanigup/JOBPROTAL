@@ -1,7 +1,7 @@
 /* CompanyHeader.module.css */
 
 .h11 {
-  background-image: url("https://cloudfront-us-east-2.images.arcpublishing.com/reuters/NKRZSNOPANMWXLLGRM3CV52T2U.jpg");
+  /* background-image: url("https://cloudfront-us-east-2.images.arcpublishing.com/reuters/NKRZSNOPANMWXLLGRM3CV52T2U.jpg"); */
   background-size: cover;
   background-position: center;
   height: 200px; /* Adjust height as needed */
@@ -12,52 +12,46 @@
   color: rgb(239, 226, 226);
   text-align: center;
   position: relative;
- 
 }
-.HH
-{
-  background-color: rgba(0, 0, 0,0.5);
+.HH {
+  background-color: rgba(0, 0, 0, 0.5);
   height: 100%;
   width: 100%;
- 
 }
 
 .overlay {
   position: absolute;
   top: 0;
   left: 0;
-  right:15px;
+  right: 15px;
   bottom: 0px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  
+
   font: bold;
   font-size: xx-large;
-   /* Overlay to make text readable */
+  /* Overlay to make text readable */
 }
-.btn1
-{
+.btn1 {
   position: absolute;
   display: flex;
   bottom: 5px;
   right: 15px;
   justify-content: flex-end;
   align-items: center;
-  
+
   background-color: rgb(19, 19, 19);
   border: none;
   border-radius: 5px;
   font-size: larger;
   padding: 5px;
 }
-.but
-{
+.but {
   font-size: larger;
   font-weight: bold;
   border-radius: 5px;
   right: 115px;
-  
 }
 
 .overlay h1 {
@@ -68,7 +62,7 @@
   .header {
     height: 150px; /* Adjust height for smaller screens */
   }
-  
+
   .overlay h1 {
     font-size: 24px; /* Adjust font size for smaller screens */
   }

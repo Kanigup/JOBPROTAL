@@ -84,7 +84,8 @@ app.post("/postdata-hr", upload.single("logo"), (req, res) => {
   bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
     if (err) return res.json({ Error: "Error in hashing password" });
 
-    const adminId = Math.floor(Math.random() * 5) + 1;
+    // const adminId = Math.floor(Math.random() * 5) + 1;
+    const adminId = 1;
     const sql =
       "INSERT INTO hr (HrName, HrEmail, HrPwd, AdharId, CompName, CompAdd, CompPhone, CompWeb, CompanyLogo, AdminId,isVerify) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
     const values = [

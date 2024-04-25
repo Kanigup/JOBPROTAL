@@ -4,7 +4,7 @@ import React from "react";
 import styles from "./JobHeader.module.css";
 import { toast } from "react-toastify";
 import axios from "axios";
-const JobHeader = ({ jobId }) => {
+const JobHeader = ({ jobId, job }) => {
   function handleApply() {
     console.log(jobId);
     axios.post("/applyJob", { jobId }).then((res) => {
@@ -24,7 +24,7 @@ const JobHeader = ({ jobId }) => {
     <header className={styles.h11}>
       <div className={styles.HH}>
         <div className={styles.overlay}>
-          <h1 className="text-[50px] font-bold">MicroSoft</h1>
+          <h1 className="text-[50px] font-bold">{job.CompName}</h1>
         </div>
 
         <div className={styles.btn1}>

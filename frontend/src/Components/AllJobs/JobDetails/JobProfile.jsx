@@ -46,7 +46,7 @@ const JobProfile = () => {
 
   return (
     <div>
-      <JobHeader jobId={jobIdInt}></JobHeader>
+      {data !== null && <JobHeader jobId={jobIdInt} job={data}></JobHeader>}
       {data !== null && <JobDetail job={data}></JobDetail>}{" "}
     </div>
   );

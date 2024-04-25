@@ -42,7 +42,7 @@ function AllCompany() {
           <th scope="col">Contact</th>
           <th scope="col">Email</th>
           <th scope="col">Web</th>
-          <th>View profile</th>
+          {/* <th>View profile</th> */}
         </tr>
       </thead>
       <tbody>
@@ -54,9 +54,9 @@ function AllCompany() {
               <td>{company.CompPhone}</td>
               <td>{company.HrEmail}</td>
               <td>{company.CompWeb}</td>
-              <td>
+              {/* <td>
                 <button className="btn btn-primary">Profile </button>
-              </td>
+              </td> */}
             </tr>
           ))}
       </tbody>

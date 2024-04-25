@@ -24,11 +24,11 @@ const CompanyRegister = () => {
     e.preventDefault();
 
     // Check if all required fields are filled
-    for (const key in formData) {
-      if (!formData[key]) {
-        return toast.error(`Please fill in ${key}`);
-      }
-    }
+    // for (const key in formData) {
+    //   if (!formData[key]) {
+    //     return toast.error(`Please fill in ${key}`);
+    //   }
+    // }
 
     const data = new FormData();
     data.append("name", formData.hrname);
